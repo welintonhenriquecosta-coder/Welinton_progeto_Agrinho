@@ -346,15 +346,9 @@ document.getElementById("textoResultado");
 let resultado =
 document.getElementById("resultadoQuiz");
 
-let titulo =
-document.getElementById("tituloResultado");
-
-let texto =
-document.getElementById("textoResultado");
 
 
 resultado.classList.add("mostrar");
-
 
 
 if(pontos >= 9){
