@@ -1,603 +1,345 @@
 // ===============================
-// TROCA DE PÁGINAS
+// SOM + VIBRAÇÃO (NÍVEL APP)
 // ===============================
 
+const clickSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-click-melodic-tone-1129.mp3");
+
+function tocarClique(){
+    clickSound.currentTime = 0;
+    clickSound.play();
+}
+
+function vibrar(){
+    if(navigator.vibrate){
+        navigator.vibrate(30);
+    }
+}
+
+// ===============================
+// TROCA DE PÁGINAS (SUAVE)
+// ===============================
 
 function mostrarPagina(numero){
 
+    const paginas = document.querySelectorAll(".page");
 
-    document.querySelectorAll(".page")
-    .forEach(pagina=>{
-
-        pagina.classList.remove("active");
-
+    paginas.forEach(p=>{
+        p.classList.remove("active");
+        p.style.opacity = "0";
+        p.style.transform = "translateY(20px)";
     });
-
-
 
     const pagina = document.getElementById(`pagina${numero}`);
 
-
     if(pagina){
-
         pagina.classList.add("active");
 
+        setTimeout(()=>{
+            pagina.style.opacity = "1";
+            pagina.style.transform = "translateY(0)";
+        }, 50);
     }
 
-
+    tocarClique();
+    vibrar();
 }
 
-
-
-
+// ===============================
 // MENU
+// ===============================
 
-document.getElementById("nav1")
-?.addEventListener("click",()=>mostrarPagina(1));
+document.getElementById("nav1")?.addEventListener("click",()=>mostrarPagina(1));
+document.getElementById("nav2")?.addEventListener("click",()=>mostrarPagina(2));
+document.getElementById("nav3")?.addEventListener("click",()=>mostrarPagina(3));
+document.getElementById("nav4")?.addEventListener("click",()=>mostrarPagina(4));
 
+// ===============================
+// BOTÕES HERO
+// ===============================
 
-document.getElementById("nav2")
-?.addEventListener("click",()=>mostrarPagina(2));
+function irRecursos(){
+    mostrarPagina(2);
+}
 
-
-document.getElementById("nav3")
-?.addEventListener("click",()=>mostrarPagina(3));
-
-
-document.getElementById("nav4")
-?.addEventListener("click",()=>mostrarPagina(4));
-
-
-
-
-
-
-
-
+function irAprendizado(){
+    mostrarPagina(3);
+}
 
 // ===============================
 // SALVAR RESPOSTAS
 // ===============================
 
-
 function salvarRespostas(){
 
+    tocarClique();
+    vibrar();
 
-let respostas = {
+    let respostas = {
+        resposta1: document.getElementById("ans1").value,
+        resposta2: document.getElementById("ans2").value,
+        resposta3: document.getElementById("ans3").value
+    };
 
+    localStorage.setItem("respostas", JSON.stringify(respostas));
 
-    resposta1:
-    document.getElementById("ans1").value,
-
-
-    resposta2:
-    document.getElementById("ans2").value,
-
-
-    resposta3:
-    document.getElementById("ans3").value
-
-
-};
-
-
-
-localStorage.setItem(
-"respostas",
-JSON.stringify(respostas)
-);
-
-
-
-document
-.getElementById("msgSalvo")
-.classList
-.remove("hidden");
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// QUIZ SUSTENTABILIDADE
-// ===============================
-
-
-const perguntasQuiz = [
-
-{
-pergunta:"Qual dessas opções é uma fonte de energia limpa?",
-opcoes:["Carvão","Energia Solar","Petróleo"],
-correta:"Energia Solar"
-},
-
-{
-pergunta:"O que significa os 3Rs da sustentabilidade?",
-opcoes:[
-"Reduzir, Reutilizar, Reciclar",
-"Reparar, Repor, Retirar",
-"Recusar, Reagir, Refazer"
-],
-correta:"Reduzir, Reutilizar, Reciclar"
-},
-
-{
-pergunta:"Por que preservar a vegetação perto dos rios?",
-opcoes:[
-"Para proteger o solo e a água",
-"Somente para deixar bonito",
-"Não possui importância"
-],
-correta:"Para proteger o solo e a água"
-},
-
-{
-pergunta:"Qual recurso devemos economizar no dia a dia?",
-opcoes:[
-"Água",
-"Lixo",
-"Poluição"
-],
-correta:"Água"
-},
-
-{
-pergunta:"Qual energia utiliza a luz do sol?",
-opcoes:[
-"Solar",
-"Carvão",
-"Petróleo"
-],
-correta:"Solar"
-},
-
-{
-pergunta:"Sustentabilidade busca:",
-opcoes:[
-"Preservar recursos para o futuro",
-"Gastar mais recursos naturais",
-"Ignorar o meio ambiente"
-],
-correta:"Preservar recursos para o futuro"
-},
-
-{
-pergunta:"A reciclagem ajuda a:",
-opcoes:[
-"Reduzir resíduos",
-"Aumentar a poluição",
-"Destruir recursos"
-],
-correta:"Reduzir resíduos"
-},
-
-{
-pergunta:"Qual atitude ajuda o planeta?",
-opcoes:[
-"Economizar energia",
-"Desperdiçar água",
-"Jogar lixo nos rios"
-],
-correta:"Economizar energia"
-},
-
-{
-pergunta:"Energia eólica utiliza:",
-opcoes:[
-"Força do vento",
-"Combustível",
-"Carvão"
-],
-correta:"Força do vento"
-},
-
-{
-pergunta:"Cuidar do meio ambiente é importante porque:",
-opcoes:[
-"Garante qualidade de vida",
-"Não muda nada",
-"Acaba com recursos"
-],
-correta:"Garante qualidade de vida"
-}
-
-];
-
-
-
-
-// embaralhar
-
-function misturar(array){
-
-return array.sort(()=>Math.random()-0.5);
-
-}
-
-
-
-
-
-function carregarQuiz(){
-
-
-let area = document.querySelector(".quiz");
-
-
-let perguntas = misturar([...perguntasQuiz]);
-
-
-
-let conteudo = "";
-
-
-
-perguntas.forEach((item,index)=>{
-
-
-let alternativas = misturar([...item.opcoes]);
-
-
-
-conteudo += `
-
-<div class="pergunta">
-
-
-<p>
-${index + 1}. ${item.pergunta}
-</p>
-
-
-
-${alternativas.map(opcao=>`
-
-
-<label>
-
-
-<input 
-type="radio"
-name="q${index}"
-value="${opcao === item.correta ? "correto":"errado"}">
-
-
-${opcao}
-
-
-</label>
-
-
-`).join("")}
-
-
-
-</div>
-
-`;
-
-
-
-});
-
-
-
-area.innerHTML = conteudo;
-
-area.innerHTML += `
-
-<button onclick="verificarQuiz()" class="finalizar">
-
-Finalizar Quiz 🎯
-
-</button>
-
-
-<div id="resultadoQuiz">
-
-</div>
-
-`;
-
-
-}
-
-
-
-carregarQuiz();
-
-function verificarQuiz(){
-
-
-let pontos = 0;
-
-
-document
-.querySelectorAll('input[type="radio"]:checked')
-.forEach(resposta=>{
-
-
-if(resposta.value==="correto"){
-
-pontos++;
-
-}
-
-
-});
-
-
-let titulo =
-document.getElementById("tituloResultado");
-
-
-let texto =
-document.getElementById("textoResultado");
-
-
-let resultado =
-document.getElementById("resultadoQuiz");
-
-
-
-resultado.classList.add("mostrar");
-
-
-if(pontos >= 9){
-
-
-confetti({
-
-particleCount:200,
-
-spread:120,
-
-startVelocity:40
-
-});
-
-
-
-titulo.innerHTML = "🎉 PARABÉNS! 🎉";
-
-
-texto.innerHTML = 
-`
-Você acertou ${pontos} de 10 perguntas!
-
-<br><br>
-
-🌱 Excelente! Você tem um ótimo conhecimento sobre sustentabilidade!
-`;
-
-
-
-}
-
-
-
-else if(pontos >= 6){
-
-
-
-confetti({
-
-particleCount:80,
-
-spread:80
-
-});
-
-
-
-titulo.innerHTML = "👏 Muito bom!";
-
-
-texto.innerHTML =
-
-`
-Você acertou ${pontos} de 10 perguntas.
-
-<br><br>
-
-Continue aprendendo e melhorando 🌱
-`;
-
-
-
-}
-
-
-
-else{
-
-
-
-titulo.innerHTML = "😔 Poxaaa...";
-
-
-texto.innerHTML =
-
-`
-Você acertou ${pontos} de 10 perguntas.
-
-<br><br>
-
-📚 Estude mais um pouco e tente novamente.
-Você consegue 🌱
-`;
-
-
-
-}
-
+    document.getElementById("msgSalvo").classList.remove("hidden");
 }
 
 // ===============================
-// MOSTRAR COMENTÁRIOS
+// FEEDBACK
 // ===============================
 
+function enviarFeedback(){
+
+    tocarClique();
+    vibrar();
+
+    let nome = document.getElementById("nomeUsuario").value;
+    let nota = document.getElementById("nota").value;
+    let texto = document.getElementById("textoFeedback").value;
+
+    let comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
+
+    comentarios.push({
+        nome,
+        nota,
+        texto,
+        data: new Date().toLocaleDateString()
+    });
+
+    localStorage.setItem("comentarios", JSON.stringify(comentarios));
+
+    let msg = document.getElementById("msgFeedback");
+    msg.style.display = "block";
+    msg.style.opacity = "0";
+
+    setTimeout(()=>{
+        msg.style.opacity = "1";
+    },100);
+
+    carregarComentarios();
+}
+
+// ===============================
+// LISTAR COMENTÁRIOS
+// ===============================
 
 function carregarComentarios(){
 
+    const lista = document.getElementById("listaComentarios");
+    if(!lista) return;
 
+    let comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
 
-const lista =
-document.getElementById("listaComentarios");
+    lista.innerHTML = "";
 
-
-
-if(!lista) return;
-
-
-
-let comentarios =
-
-JSON.parse(
-
-localStorage.getItem("comentarios")
-
-) || [];
-
-
-
-
-lista.innerHTML="";
-
-
-
-
-comentarios.reverse().forEach(item=>{
-
-
-lista.innerHTML += `
-
-<div>
-
-<h4>
-${item.nome}
-</h4>
-
-
-<p>
-⭐ ${item.nota}
-</p>
-
-
-<p>
-${item.texto}
-</p>
-
-
-</div>
-
-`;
-
-
-});
-
-
-
+    comentarios.reverse().forEach(item=>{
+        lista.innerHTML += `
+            <div class="comentario">
+                <h4>${item.nome}</h4>
+                <p>⭐ ${item.nota}</p>
+                <p>${item.texto}</p>
+                <small>${item.data}</small>
+            </div>
+        `;
+    });
 }
-
-
 
 carregarComentarios();
 
+// ===============================
+// QUIZ
+// ===============================
+
+const perguntasQuiz = [
+{
+    pergunta:"Qual fonte é limpa?",
+    opcoes:["Carvão","Energia Solar","Petróleo"],
+    correta:"Energia Solar"
+},
+{
+    pergunta:"3Rs significam:",
+    opcoes:["Reduzir, Reutilizar, Reciclar","Reagir, Repor, Retirar","Recusar, Refazer, Reagir"],
+    correta:"Reduzir, Reutilizar, Reciclar"
+},
+{
+    pergunta:"Preservar rios ajuda:",
+    opcoes:["Água e solo","Apenas estética","Nada"],
+    correta:"Água e solo"
+},
+{
+    pergunta:"Devemos economizar:",
+    opcoes:["Água","Lixo","Poluição"],
+    correta:"Água"
+},
+{
+    pergunta:"Energia solar vem do:",
+    opcoes:["Sol","Carvão","Gasolina"],
+    correta:"Sol"
+},
+{
+    pergunta:"Sustentabilidade é:",
+    opcoes:["Preservar futuro","Gastar tudo","Ignorar natureza"],
+    correta:"Preservar futuro"
+},
+{
+    pergunta:"Reciclar ajuda a:",
+    opcoes:["Reduzir lixo","Aumentar lixo","Destruir recursos"],
+    correta:"Reduzir lixo"
+},
+{
+    pergunta:"Boa atitude:",
+    opcoes:["Economizar energia","Desperdiçar água","Poluir rios"],
+    correta:"Economizar energia"
+},
+{
+    pergunta:"Energia eólica usa:",
+    opcoes:["Vento","Fogo","Gasolina"],
+    correta:"Vento"
+},
+{
+    pergunta:"Cuidar do planeta:",
+    opcoes:["Garante vida","Não muda nada","Acaba tudo"],
+    correta:"Garante vida"
+}
+];
+
+// embaralhar
+function misturar(array){
+    return array.sort(()=>Math.random()-0.5);
+}
+
+// montar quiz
+function carregarQuiz(){
+
+    let area = document.querySelector(".quiz");
+
+    let perguntas = misturar([...perguntasQuiz]);
+
+    let html = "";
+
+    perguntas.forEach((item,index)=>{
+
+        let alternativas = misturar([...item.opcoes]);
+
+        html += `
+        <div class="pergunta">
+            <p>${index+1}. ${item.pergunta}</p>
+
+            ${alternativas.map(op=>`
+                <label>
+                    <input type="radio" name="q${index}" value="${op===item.correta?"correto":"errado"}">
+                    ${op}
+                </label>
+            `).join("")}
+
+        </div>
+        `;
+    });
+
+    html += `
+        <button onclick="verificarQuiz()" class="finalizar">
+            Finalizar Quiz 🎯
+        </button>
+
+        <div id="resultadoQuiz"></div>
+    `;
+
+    area.innerHTML = html;
+}
+
+carregarQuiz();
 
 // ===============================
-// TEMA ESCURO / CLARO
+// NÍVEL DO JOGADOR
 // ===============================
 
+function calcularNivel(pontos){
 
-const tema =
-document.getElementById("tema");
+    if(pontos >= 9) return "🌟 Mestre da Sustentabilidade";
+    if(pontos >= 7) return "🔥 Muito Bom";
+    if(pontos >= 5) return "👍 Em evolução";
+    return "📚 Iniciante";
+}
 
+// ===============================
+// VERIFICAR QUIZ
+// ===============================
 
-tema.addEventListener("click",()=>{
+function verificarQuiz(){
 
+    tocarClique();
+    vibrar();
+
+    let pontos = 0;
+
+    document.querySelectorAll('input[type="radio"]:checked')
+    .forEach(r=>{
+        if(r.value==="correto") pontos++;
+    });
+
+    let nivel = calcularNivel(pontos);
+
+    const resultado = document.getElementById("resultadoQuiz");
+
+    resultado.classList.add("mostrar");
+
+    if(pontos >= 8){
+
+        confetti({
+            particleCount:150,
+            spread:120,
+            origin:{y:0.6}
+        });
+
+    }
+
+    resultado.innerHTML = `
+        🎯 Resultado Final<br><br>
+
+        Você acertou ${pontos} de 10 perguntas<br><br>
+
+        ${nivel}
+    `;
+}
+
+// ===============================
+// TOPO
+// ===============================
+
+const topo = document.getElementById("topo");
+
+window.addEventListener("scroll",()=>{
+    topo.style.display = window.scrollY > 300 ? "block" : "none";
+});
+
+topo?.addEventListener("click",()=>{
+    window.scrollTo({top:0, behavior:"smooth"});
+});
+
+const tema = document.getElementById("tema");
+
+tema?.addEventListener("click", () => {
 
 document.body.classList.toggle("light");
 
+const isLight = document.body.classList.contains("light");
 
-if(document.body.classList.contains("light")){
+tema.innerHTML = isLight ? "☀️" : "🌙";
 
+localStorage.setItem("tema", isLight ? "light" : "dark");
 
-tema.innerHTML="🌙";
+});
 
+// manter tema ao recarregar
+(function(){
 
-}else{
+const temaSalvo = localStorage.getItem("tema");
 
-
-tema.innerHTML="☀️";
-
-
+if(temaSalvo === "light"){
+    document.body.classList.add("light");
+    const btn = document.getElementById("tema");
+    if(btn) btn.innerHTML = "☀️";
 }
 
-
-});
-
-
-
-
-
-
-
-
-// ===============================
-// VOLTAR AO TOPO
-// ===============================
-
-
-const topo =
-document.getElementById("topo");
-
-
-
-window.addEventListener("scroll",()=>{
-
-
-if(window.scrollY > 300){
-
-topo.style.display="block";
-
-}else{
-
-topo.style.display="none";
-
-}
-
-
-});
-
-
-
-
-
-topo?.addEventListener("click",()=>{
-
-
-window.scrollTo({
-
-top:0,
-
-behavior:"smooth"
-
-});
-
-
-});
-
-function refazerQuiz(){
-
-location.reload();
-
-}
+})();
